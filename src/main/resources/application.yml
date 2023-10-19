@@ -1,0 +1,13 @@
+spring:
+  token:
+    directory:
+      path: TOKEN_path
+  credentials:
+    file:
+      path: FILE_PATH
+  application:
+    name: sheets
+  oauth2:
+    google:
+      clientId: CLIENT_ID
+      clientSecret: CLIENT_SECRET
