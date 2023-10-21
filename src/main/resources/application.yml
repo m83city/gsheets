@@ -1,4 +1,6 @@
 spring:
+  spreadsheet:
+    id: 1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw
   token:
     directory:
       path: TOKEN_path
