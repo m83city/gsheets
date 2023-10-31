@@ -1,16 +1,17 @@
 package com.example.gsheets.controller;
 
+import com.example.gsheets.controller.dto.StudentDTOController;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 
 public class SheetController {
     @GetMapping("/sheet/{id}")
-    public StudentDTO getStudentById(@RequestParam String id){
-        return ;
+    public StudentDTOController getStudentById(@RequestParam String id){
+        return null ;
     }
     @PutMapping("/sheet/{id}")
-    public StudentDTO updateStudentById (@RequestParam String id, @RequestBody StudentDTO updatedStudent){
+    public StudentDTOController updateStudentById (@RequestParam String id, @RequestBody StudentDTOController updatedStudent){
         return null;
     }
     @DeleteMapping("/sheet/{id}")
@@ -18,7 +19,7 @@ public class SheetController {
 
     }
     @PostMapping("/sheet")
-    public StudentDTO createNewStudent(@RequestBody StudentDTO newStudent){
+    public StudentDTOController createNewStudent(@RequestBody StudentDTOController newStudent){
         return null;
     }
 
