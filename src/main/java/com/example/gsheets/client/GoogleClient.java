@@ -15,7 +15,7 @@ public class GoogleClient {
     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private final String spreadId = "1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw";
-    GoogleCredential credential = new GoogleCredential();
+    GoogleCredentialAPI credential = new GoogleCredentialAPI();
 
 
 

@@ -16,4 +16,13 @@ public class ClientDTOMapper {
                 .lastName(student.getValues().get(0).get(3).toString())
                 .build();
     }
+    public static Student asStudent (StudentDTOClient student){
+        return Student
+                .builder()
+                .Id(student.getId())
+                .firstName(student.getFirstName())
+                .secondName(student.getSecondName())
+                .lastName(student.getLastName())
+                .build();
+    }
 }
