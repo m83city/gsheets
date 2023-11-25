@@ -12,32 +12,16 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 @Repository
 public class GoogleClient {
-    final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    //final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private final String spreadId = "1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw";
-    GoogleCredentialAPI credential = new GoogleCredentialAPI();
+   // GoogleCredentialAPI credential = new GoogleCredentialAPI();
 
 
 
     private static final String APPLICATION_NAME = "Google Sheets API";
 
-    public GoogleClient() throws GeneralSecurityException, IOException {
-        credential.getCredentials(HTTP_TRANSPORT);
-    }
 
-    public ValueRange getStudentFromSheetsById(String range) throws IOException, GeneralSecurityException{
-        Sheets service = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential.getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        ValueRange response = service
-                .spreadsheets()
-                .values()
-                .get(spreadId, range)
-                .execute();
-
-        return response;
-    }
 
 
 }

@@ -7,13 +7,13 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import java.util.List;
 
 public class ClientDTOMapper {
-    public static StudentDTOClient asStudentDTO(ValueRange student) {
+    public static StudentDTOClient asStudentDTO(List<String> student) {
         return StudentDTOClient
                 .builder()
-                .Id(student.getValues().get(0).get(0).toString())
-                .firstName(student.getValues().get(0).get(1).toString())
-                .secondName(student.getValues().get(0).get(2).toString())
-                .lastName(student.getValues().get(0).get(3).toString())
+                .Id(student.get(0))
+                .firstName(student.get(1))
+                .secondName(student.get(2))
+                .lastName(student.get(3))
                 .build();
     }
     public static Student asStudent (StudentDTOClient student){

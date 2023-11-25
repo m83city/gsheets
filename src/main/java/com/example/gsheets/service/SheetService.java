@@ -17,7 +17,7 @@ import static com.example.gsheets.client.GoogleCredentialAPI.getStudentByIdFromS
 public class SheetService {
 
     public Student getStudentById(String id) throws GeneralSecurityException, IOException {
-        System.out.println("SERVICE");
+
         return asStudent(getStudentByIdFromSheets(id));
     }
 }
