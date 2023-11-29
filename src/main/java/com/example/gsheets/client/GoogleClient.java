@@ -21,6 +21,20 @@ public class GoogleClient {
     private final String spreadId = "1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw";
 
     private List<List<Object>> getDataSheet() throws IOException, GeneralSecurityException {
+
+
+//        /*   //getValues.get(0);
+//         * [
+//         *  ["id","first","second","last"],
+//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a703CRIS","Cris","Bord","Gerson"],
+//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a70Carlos","Carlos","Robinson","Gers"],
+//         *  ["8f335c2e-9a9d-43a5-be33-4bc9a70Hover","Hover","Rob","Jeack"],
+//         *  ["8f335c2e-9a2d-43a5-be10-4bc9a7034Berns","Berns","Garrison","Johes"],
+//         *  ["8f445c2e-9a9d-43a5-be30-4bc9a703Homer","Homer","Herb","Hibert"],
+//         *  [],
+//         *  ["8f333x2e-1a2d-43a5-be99-4bc9a703Devi","Devi","Gar","John"]
+//         * ]
+
         String spreadSheetRange = "A:D";
         List<String> ranges = Arrays.asList(spreadSheetRange);
         return initializeSheet()
