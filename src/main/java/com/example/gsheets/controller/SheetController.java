@@ -19,17 +19,17 @@ public class SheetController {
     }
 
     @PutMapping("/sheet/{id}")
-    public StudentDTOController updateStudentById (@PathVariable String id, @RequestBody StudentDTOController updatedStudent){
+    public StudentDTOController updateStudentById (@PathVariable String id, @RequestBody StudentDTOController updatedStudent) throws GeneralSecurityException, IOException {
+        service.updateStudent(id, fromDTOControllerToStudent(updatedStudent));
         return null;
     }
     @DeleteMapping("/sheet/{id}")
-    public void deleteStudentById(@PathVariable String id){
-
+    public String deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
+       return service.deleteStudent(id);
     }
     @PostMapping("/sheet")
     public StudentDTOController createNewStudent(@RequestBody StudentDTOController student ) throws GeneralSecurityException, IOException {
         service.createStudent(fromDTOControllerToStudent(student));
-
         return null;
     }
 
