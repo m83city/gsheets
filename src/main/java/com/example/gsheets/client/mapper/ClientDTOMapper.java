@@ -7,22 +7,18 @@ import com.google.api.services.sheets.v4.model.ValueRange;
 import java.util.List;
 
 public class ClientDTOMapper {
-    public static StudentDTOClient asStudentDTO(List<String> student) {
+    //named index list
+    static int id = 0;
+    static int firstName = 1;
+   static  int secondName = 2;
+   static int lastName = 3;
+    public static StudentDTOClient asStudentDTOClient(List<String> student) {
         return StudentDTOClient
                 .builder()
-                .Id(student.get(0))
-                .firstName(student.get(1))
-                .secondName(student.get(2))
-                .lastName(student.get(3))
-                .build();
-    }
-    public static Student asStudent (StudentDTOClient student){
-        return Student
-                .builder()
-                .Id(student.getId())
-                .firstName(student.getFirstName())
-                .secondName(student.getSecondName())
-                .lastName(student.getLastName())
+                .id(student.get(id))
+                .firstName(student.get(firstName))
+                .secondName(student.get(secondName))
+                .lastName(student.get(lastName))
                 .build();
     }
 }

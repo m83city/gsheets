@@ -1,6 +1,6 @@
 package com.example.gsheets.client;
 
-import com.example.gsheets.client.dto.StudentDTOClient;
+import com.example.gsheets.service.domain.Student;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -16,17 +16,15 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 
 import static com.example.gsheets.client.mapper.ClientDTOMapper.*;
+import static com.example.gsheets.service.mapper.StudentMapper.fromDTOClientToStudent;
 
 public class GoogleCredentialAPI {
     private static final String APPLICATION_NAME = "Google Sheets API Java Quickstart";
     final static String spreadId = "1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw";
-    final static String searchingStudent = "8f335c2e-9a9d-43a5-be33-4bc9a7034780";
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final List<String> SCOPES =
-            Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+            Collections.singletonList(SheetsScopes.DRIVE);
     private static final String KEY_FILE_PATH = "/creds.json";
 
     public static Credential getCredentials() throws IOException, GeneralSecurityException {
@@ -45,66 +43,94 @@ public class GoogleCredentialAPI {
                 .build();
     }
 
-    private static List<List<Object>> getIdList() throws IOException, GeneralSecurityException {
-        System.out.println("getIdList");
-        final String spreadRange = "A2:A";
+//    private static List<List<Object>> getIdList() throws IOException, GeneralSecurityException {
+//        System.out.println("getIdList");
+//        final String spreadRange = "A2:A";
+//
+//        List<List<Object>> ids = initializeSheet()
+//                .spreadsheets()
+//                .values()
+//                .get(spreadId, spreadRange)
+//                .execute()
+//                .getValues();
+//        return ids;
+//    }
 
-        List<List<Object>> ids = initializeSheet()
-                .spreadsheets()
-                .values()
-                .get(spreadId, spreadRange)
-                .execute()
-                .getValues();
-        return ids;
-    }
-
-    private static BatchGetValuesResponse getIdListBatch() throws IOException, GeneralSecurityException {//getbyId
+//    private static BatchGetValuesResponse getIdListBatch() throws IOException, GeneralSecurityException {//getbyId
+//        List<String> ranges = Arrays.asList("A:D");
+//        BatchGetValuesResponse readResult = initializeSheet()
+//                .spreadsheets()
+//                .values()
+//                .batchGet(spreadId)
+//                .setRanges(ranges)
+//                .execute();
+//        /*   //getValues.get(0);
+//         * [
+//         *  ["id","first","second","last"],
+//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a703CRIS","Cris","Bord","Gerson"],
+//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a70Carlos","Carlos","Robinson","Gers"],
+//         *  ["8f335c2e-9a9d-43a5-be33-4bc9a70Hover","Hover","Rob","Jeack"],
+//         *  ["8f335c2e-9a2d-43a5-be10-4bc9a7034Berns","Berns","Garrison","Johes"],
+//         *  ["8f445c2e-9a9d-43a5-be30-4bc9a703Homer","Homer","Herb","Hibert"],
+//         *  [],
+//         *  ["8f333x2e-1a2d-43a5-be99-4bc9a703Devi","Devi","Gar","John"]
+//         * ]
+//         *
+//         *  */
+//        return readResult;
+//    }
+    private static List<List<Object>> getDataSheet() throws IOException, GeneralSecurityException{
         List<String> ranges = Arrays.asList("A:D");
-        BatchGetValuesResponse readResult = initializeSheet()
+        return initializeSheet()
                 .spreadsheets()
                 .values()
                 .batchGet(spreadId)
                 .setRanges(ranges)
-                .execute();
-        /*   //getValues.get(0);
-         * [
-         *  ["id","first","second","last"],
-         *  ["8f335c2e-9a9d-43a5-be10-4bc9a703CRIS","Cris","Bord","Gerson"],
-         *  ["8f335c2e-9a9d-43a5-be10-4bc9a70Carlos","Carlos","Robinson","Gers"],
-         *  ["8f335c2e-9a9d-43a5-be33-4bc9a70Hover","Hover","Rob","Jeack"],
-         *  ["8f335c2e-9a2d-43a5-be10-4bc9a7034Berns","Berns","Garrison","Johes"],
-         *  ["8f445c2e-9a9d-43a5-be30-4bc9a703Homer","Homer","Herb","Hibert"],
-         *  [],
-         *  ["8f333x2e-1a2d-43a5-be99-4bc9a703Devi","Devi","Gar","John"]
-         * ]
-         *
-         *  */
-        return readResult;
+                .execute()
+                .getValueRanges()
+                .get(0)
+                .getValues();
     }
 //
 //    public static void main(String[] args) throws GeneralSecurityException, IOException {
-//        getStudentByIdFromSheets("22");
+//        dataFilter();
 //    }
 
-    public static StudentDTOClient getStudentByIdFromSheets(String id) throws GeneralSecurityException, IOException {
+//    public static void dataFilter () throws IOException, GeneralSecurityException{
+//        String range = "A:D";
+//        DeveloperMetadataLookup metadataLookup  = new DeveloperMetadataLookup()
+//                .setMetadataValue("22")
+//                .setMetadataId(22)
+//                .setLocationType("ROW");
+//
+//        DataFilter dataFilter = new DataFilter()
+//                .setA1Range(range)
+//                .setDeveloperMetadataLookup(metadataLookup);
+//        List<DataFilter> dataFilterList = Collections.singletonList(dataFilter);
+//
+//        BatchGetValuesByDataFilterRequest cont = new BatchGetValuesByDataFilterRequest()
+//                .setDataFilters(dataFilterList);
+//
+//     var a =   initializeSheet()
+//                .spreadsheets()
+//                .values()
+//                .batchGetByDataFilter(spreadId,cont)
+//                .execute()
+//                .getValueRanges()
+//                .get(0);
+//        System.out.println(a);
+//    }
 
+    public static Student getStudentByIdFromSheets(String id) throws GeneralSecurityException, IOException {
+        List<String> targetStudent = getDataSheet()
+                .stream()
+                .filter(st -> st.get(0).equals(id))
+                .flatMap(
+                        innerList -> innerList.stream().map(Object::toString)
+                )
+                .toList();
+      return   fromDTOClientToStudent(asStudentDTOClient(targetStudent));
 
-        List<String> studentTarget =
-                getIdListBatch()
-                        .getValueRanges()
-                        .get(0)
-                        .getValues()
-                        .stream()
-                        .filter(st -> st.get(0).equals(id))
-                        .flatMap(
-                                innerList -> innerList.stream().map(Object::toString)
-                        )
-                        //  .map(objects -> Objects.toString(objects,null))
-                        .toList();
-
-
-
-      return   asStudentDTO(studentTarget);
 
 
 //        for (int i = 0; i < idList.size(); i++) {
@@ -117,6 +143,33 @@ public class GoogleCredentialAPI {
 //                return asStudentDTO(res);
 //            }
 //        }
-
     }
+    public static Student createNewStudent(Student student) throws IOException, GeneralSecurityException{
+        List<ValueRange> newStudent = new ArrayList<>();
+        newStudent.add(new ValueRange()
+                .setRange("A" + (getDataSheet().size() + 1))
+                .setValues(Arrays.asList(
+                        Arrays.asList(
+                                student.getId(),
+                                student.getFirstName(),
+                                student.getSecondName(),
+                                student.getFirstName()
+                        )))
+        );
+        try {
+            BatchUpdateValuesRequest batchBody = new BatchUpdateValuesRequest()
+                    .setValueInputOption("USER_ENTERED")
+                    .setData(newStudent);
+            BatchUpdateValuesResponse batchResponse = initializeSheet()
+                    .spreadsheets()
+                    .values()
+                    .batchUpdate(spreadId, batchBody)
+                    .execute();
+            return student;
+        }catch (RuntimeException | IOException | GeneralSecurityException e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
 }

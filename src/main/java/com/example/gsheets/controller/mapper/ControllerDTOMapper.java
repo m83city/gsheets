@@ -4,10 +4,10 @@ import com.example.gsheets.controller.dto.StudentDTOController;
 import com.example.gsheets.service.domain.Student;
 
 public class ControllerDTOMapper {
-        public static StudentDTOController asStudent (Student student){
+        public static StudentDTOController fromStudentToDTOController (Student student){
             return StudentDTOController
                     .builder()
-                    .Id(student.getId())
+                    .id(student.getId())
                     .firstName(student.getFirstName())
                     .secondName(student.getSecondName())
                     .lastName(student.getLastName())
