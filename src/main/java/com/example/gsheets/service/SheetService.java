@@ -2,14 +2,16 @@ package com.example.gsheets.service;
 
 import com.example.gsheets.client.GoogleClient;
 import com.example.gsheets.service.domain.Student;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 @Service
+@RequiredArgsConstructor
 public class SheetService {
-    GoogleClient client = new GoogleClient();
+    private final  GoogleClient client;
 
     public Student getStudentById(String id) throws GeneralSecurityException, IOException {
         return client.getById(id);

@@ -2,6 +2,8 @@ package com.example.gsheets.client;
 
 import com.example.gsheets.service.domain.Student;
 import com.google.api.services.sheets.v4.model.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -17,27 +19,16 @@ import static com.example.gsheets.client.mapper.ClientDTOMapper.asStudentDTOClie
 import static com.example.gsheets.service.mapper.StudentMapper.fromDTOClientToStudent;
 
 @Repository
+@RequiredArgsConstructor
 public class GoogleClient {
-    private final String spreadId = "1ojNfksTD6GzD6pA_rOEFVex0C2kZqn0GdVY3ltnUFhw";
+    @Value("${spring.spread-id}")
+    private String spreadId;
+    private final GoogleCredentialAPI credentialAPI;
 
     private List<List<Object>> getDataSheet() throws IOException, GeneralSecurityException {
-
-
-//        /*   //getValues.get(0);
-//         * [
-//         *  ["id","first","second","last"],
-//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a703CRIS","Cris","Bord","Gerson"],
-//         *  ["8f335c2e-9a9d-43a5-be10-4bc9a70Carlos","Carlos","Robinson","Gers"],
-//         *  ["8f335c2e-9a9d-43a5-be33-4bc9a70Hover","Hover","Rob","Jeack"],
-//         *  ["8f335c2e-9a2d-43a5-be10-4bc9a7034Berns","Berns","Garrison","Johes"],
-//         *  ["8f445c2e-9a9d-43a5-be30-4bc9a703Homer","Homer","Herb","Hibert"],
-//         *  [],
-//         *  ["8f333x2e-1a2d-43a5-be99-4bc9a703Devi","Devi","Gar","John"]
-//         * ]
-
         String spreadSheetRange = "A:D";
         List<String> ranges = Arrays.asList(spreadSheetRange);
-        return initializeSheet()
+        return credentialAPI.initializeSheet()
                 .spreadsheets()
                 .values()
                 .batchGet(spreadId)
@@ -47,6 +38,7 @@ public class GoogleClient {
                 .get(0)
                 .getValues();
     }
+
     private OptionalInt getTargetIndex(String id) throws GeneralSecurityException, IOException {
         return IntStream.range(0, getDataSheet().size())
                 .filter(i -> {
@@ -76,7 +68,7 @@ public class GoogleClient {
             BatchUpdateValuesRequest batchBody = new BatchUpdateValuesRequest()
                     .setValueInputOption("USER_ENTERED")
                     .setData(newStudent);
-            BatchUpdateValuesResponse batchResponse = initializeSheet()
+            BatchUpdateValuesResponse batchResponse = credentialAPI.initializeSheet()
                     .spreadsheets()
                     .values()
                     .batchUpdate(spreadId, batchBody)
@@ -114,7 +106,7 @@ public class GoogleClient {
             BatchUpdateValuesRequest batchBody = new BatchUpdateValuesRequest()
                     .setValueInputOption("USER_ENTERED")
                     .setData(newStudent);
-            BatchUpdateValuesResponse batchResponse = initializeSheet()
+            BatchUpdateValuesResponse batchResponse = credentialAPI.initializeSheet()
                     .spreadsheets()
                     .values()
                     .batchUpdate(spreadId, batchBody)
@@ -140,7 +132,7 @@ public class GoogleClient {
         requestList.add(request);
         BatchUpdateSpreadsheetRequest content = new BatchUpdateSpreadsheetRequest();
         content.setRequests(requestList);
-        initializeSheet()
+        credentialAPI.initializeSheet()
                 .spreadsheets()
                 .batchUpdate(spreadId, content)
                 .execute();
