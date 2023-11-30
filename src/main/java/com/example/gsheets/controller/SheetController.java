@@ -24,12 +24,13 @@ public class SheetController {
         return null;
     }
     @DeleteMapping("/sheet/{id}")
-    public String deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
-       return service.deleteStudent(id);
+    public void deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
+        service.deleteStudent(id);
     }
     @PostMapping("/sheet")
     public StudentDTOController createNewStudent(@RequestBody StudentDTOController student ) throws GeneralSecurityException, IOException {
         service.createStudent(fromDTOControllerToStudent(student));
+
         return null;
     }
 
