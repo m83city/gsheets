@@ -4,13 +4,11 @@ import com.example.gsheets.controller.dto.StudentDTOController;
 import com.example.gsheets.service.SheetService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import static  com.example.gsheets.controller.mapper.ControllerDTOMapper.*;
+import static com.example.gsheets.controller.mapper.StudentApiMapper.*;
 import static com.example.gsheets.service.mapper.StudentMapper.fromDTOControllerToStudent;
 
 @RestController

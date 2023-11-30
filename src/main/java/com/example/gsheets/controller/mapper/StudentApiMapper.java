@@ -3,7 +3,7 @@ package com.example.gsheets.controller.mapper;
 import com.example.gsheets.controller.dto.StudentDTOController;
 import com.example.gsheets.service.domain.Student;
 
-public class ControllerDTOMapper {
+public class StudentApiMapper {
         public static StudentDTOController fromStudentToDTOController (Student student){
             return StudentDTOController
                     .builder()
