@@ -14,9 +14,8 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
-import static com.example.gsheets.client.GoogleCredentialAPI.*;
-import static com.example.gsheets.client.mapper.ClientDTOMapper.asStudentDTOClient;
-import static com.example.gsheets.service.mapper.StudentMapper.fromDTOClientToStudent;
+import static com.example.gsheets.client.mapper.ClientMapper.asStudent;
+import static com.example.gsheets.client.mapper.ClientMapper.asStudentDTOClient;
 
 @Repository
 @RequiredArgsConstructor
@@ -52,7 +51,6 @@ public class GoogleClient {
     }
 
     public Student update(String id, Student student) throws IOException, GeneralSecurityException {
-
         List<ValueRange> newStudent = new ArrayList<>();
         newStudent.add(new ValueRange()
                 .setRange("A" + (1 + getTargetIndex(id).getAsInt()))
@@ -87,7 +85,7 @@ public class GoogleClient {
                         innerList -> innerList.stream().map(Object::toString)
                 )
                 .toList();
-        return fromDTOClientToStudent(asStudentDTOClient(targetStudent));
+        return asStudent(asStudentDTOClient(targetStudent));
     }
 
     public Student create(Student student) throws IOException, GeneralSecurityException {

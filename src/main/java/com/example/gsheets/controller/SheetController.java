@@ -1,6 +1,6 @@
 package com.example.gsheets.controller;
 
-import com.example.gsheets.controller.dto.StudentDTOController;
+import com.example.gsheets.controller.dto.StudentDTO;
 import com.example.gsheets.service.SheetService;
 import lombok.RequiredArgsConstructor;
 
@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import static com.example.gsheets.controller.mapper.StudentApiMapper.*;
-import static com.example.gsheets.service.mapper.StudentMapper.fromDTOControllerToStudent;
+import static com.example.gsheets.controller.mapper.ApiMapper.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,19 +16,19 @@ public class SheetController {
    private final SheetService service;
 
     @GetMapping("/student/{id}")
-    public StudentDTOController getStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
-        return fromStudentToDTOController(service.getStudentById(id));
+    public StudentDTO getStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
+        return asStudentDTO(service.getStudentById(id));
     }
     @PutMapping("/student/{id}")
-    public void updateStudentById (@PathVariable String id, @RequestBody StudentDTOController updatedStudent) throws GeneralSecurityException, IOException {
-        service.updateStudent(id, fromDTOControllerToStudent(updatedStudent));
+    public void updateStudentById (@PathVariable String id, @RequestBody StudentDTO updatedStudent) throws GeneralSecurityException, IOException {
+        service.updateStudent(id, asStudent(updatedStudent));
     }
     @DeleteMapping("/student/{id}")
     public void deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
         service.deleteStudent(id);
     }
     @PostMapping("/student")
-    public void createNewStudent(@RequestBody StudentDTOController student ) throws GeneralSecurityException, IOException {
-        service.createStudent(fromDTOControllerToStudent(student));
+    public void createNewStudent(@RequestBody StudentDTO student ) throws GeneralSecurityException, IOException {
+        service.createStudent(asStudent(student));
     }
 }
