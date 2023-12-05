@@ -30,7 +30,7 @@ public class SheetController {
         service.deleteStudent(id);
     }
     @PostMapping("/student")
-    public void createNewStudent(@RequestBody StudentDTO student ) throws GeneralSecurityException, IOException {
+    public void createNewStudent(@RequestBody StudentDTO student ){
         service.createStudent(asStudent(student, ApiEnum.CREATE));
     }
 }

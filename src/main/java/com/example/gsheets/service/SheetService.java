@@ -16,7 +16,7 @@ public class SheetService {
     public Student getStudentById(String id) throws GeneralSecurityException, IOException {
         return client.getById(id);
     }
-    public Student createStudent (Student student) throws GeneralSecurityException, IOException{
+    public Student createStudent (Student student){
         return client.create(student);
     }
     public String updateStudent (String id, Student student) throws  GeneralSecurityException, IOException{

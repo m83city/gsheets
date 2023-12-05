@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static com.example.gsheets.client.mapper.ClientMapper.asStudent;
@@ -24,33 +20,7 @@ public class GoogleClient {
     private String spreadId;
     private final GoogleCredentialAPI credentialAPI;
 
-    private List<List<Object>> getDataSheet() throws IOException, GeneralSecurityException {
-        String spreadSheetRange = "A:D";
-        List<String> ranges = Arrays.asList(spreadSheetRange);
-        return credentialAPI.initializeSheet()
-                .spreadsheets()
-                .values()
-                .batchGet(spreadId)
-                .setRanges(ranges)
-                .execute()
-                .getValueRanges()
-                .get(0)
-                .getValues();
-    }
-
-    private OptionalInt getTargetIndex(String id) throws GeneralSecurityException, IOException {
-        return IntStream.range(0, getDataSheet().size())
-                .filter(i -> {
-                    try {
-                        return getDataSheet().get(i).contains(id);
-                    } catch (IOException | GeneralSecurityException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .findFirst();
-    }
-
-    public Student update(String id, Student student) throws IOException, GeneralSecurityException {
+    public Student update(String id, Student student) {
         List<ValueRange> newStudent = new ArrayList<>();
         newStudent.add(new ValueRange()
                 .setRange("A" + (1 + getTargetIndex(id).getAsInt()))
@@ -72,12 +42,12 @@ public class GoogleClient {
                     .batchUpdate(spreadId, batchBody)
                     .execute();
             return student;
-        } catch (RuntimeException | IOException | GeneralSecurityException e) {
+        } catch (RuntimeException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Student getById(String id) throws GeneralSecurityException, IOException {
+    public Student getById(String id) {
         List<String> targetStudent = getDataSheet()
                 .stream()
                 .filter(st -> st.get(0).equals(id))
@@ -88,19 +58,19 @@ public class GoogleClient {
         return asStudent(asStudentDTOClient(targetStudent));
     }
 
-    public Student create(Student student) throws IOException, GeneralSecurityException {
+    public Student create(Student student) {
+        try {
         List<ValueRange> newStudent = new ArrayList<>();
         newStudent.add(new ValueRange()
-                .setRange("A" + (getDataSheet().size() + 1))
+                .setRange("COUNTA(A)")
                 .setValues(Arrays.asList(
                         Arrays.asList(
-                                student.getId(),
+                                UUID.randomUUID().toString(),
                                 student.getFirstName(),
                                 student.getSecondName(),
                                 student.getLastName()
                         )))
         );
-        try {
             BatchUpdateValuesRequest batchBody = new BatchUpdateValuesRequest()
                     .setValueInputOption("USER_ENTERED")
                     .setData(newStudent);
@@ -110,13 +80,12 @@ public class GoogleClient {
                     .batchUpdate(spreadId, batchBody)
                     .execute();
             return student;
-        } catch (RuntimeException | IOException | GeneralSecurityException e) {
-            System.out.println(e);
+        } catch (RuntimeException | IOException  e) {
+            throw  new RuntimeException(e.getMessage(), e);
         }
-        return null;
     }
 
-    public String delete(String id) throws IOException, GeneralSecurityException {
+    public String delete(String id) {
         List<Request> requestList = new ArrayList<>();
         Request request = new Request()
                 .setDeleteDimension(new DeleteDimensionRequest()
@@ -130,10 +99,39 @@ public class GoogleClient {
         requestList.add(request);
         BatchUpdateSpreadsheetRequest content = new BatchUpdateSpreadsheetRequest();
         content.setRequests(requestList);
-        credentialAPI.initializeSheet()
-                .spreadsheets()
-                .batchUpdate(spreadId, content)
-                .execute();
+        try {
+            credentialAPI.initializeSheet()
+                    .spreadsheets()
+                    .batchUpdate(spreadId, content)
+                    .execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return "Delete successful";
+    }
+    private List<List<Object>> getDataSheet() {
+        String spreadSheetRange = "A:D";
+        List<String> ranges = Arrays.asList(spreadSheetRange);
+        try {
+            return credentialAPI.initializeSheet()
+                    .spreadsheets()
+                    .values()
+                    .batchGet(spreadId)
+                    .setRanges(ranges)
+                    .execute()
+                    .getValueRanges()
+                    .get(0)
+                    .getValues();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private OptionalInt getTargetIndex(String id) {
+        List<List<Object>> a = getDataSheet();
+        return IntStream.range(0, a.size())
+                .filter(i -> {
+                        return a.get(i).contains(id);
+                })
+                .findFirst();
     }
 }

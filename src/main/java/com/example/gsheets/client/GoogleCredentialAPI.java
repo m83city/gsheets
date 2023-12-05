@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.*;
+
 @Repository
 public class GoogleCredentialAPI {
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -27,16 +28,25 @@ public class GoogleCredentialAPI {
     @Value("${spring.service-email}")
     private String serviceEmail;
 
-    public  Credential getCredentials() throws IOException, GeneralSecurityException {
-        GoogleCredential credential = GoogleCredential
-                .fromStream(Objects.requireNonNull(GoogleCredentialAPI.class.getResourceAsStream(keyPath)))
-                .createScoped(SCOPES)
-                .createDelegated(serviceEmail);
-        return credential;
+    public Credential getCredentials(){// try catch
+        try {
+            GoogleCredential credential = GoogleCredential
+                    .fromStream(Objects.requireNonNull(GoogleCredentialAPI.class.getResourceAsStream(keyPath)))
+                    .createScoped(SCOPES)
+                    .createDelegated(serviceEmail);
+            return credential;
+        } catch (RuntimeException | IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
-    public  Sheets initializeSheet() throws IOException, GeneralSecurityException {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+    public Sheets initializeSheet() {
+        final NetHttpTransport HTTP_TRANSPORT;
+        try {
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        } catch (IOException | GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials())
                 .setApplicationName(applicationName)
                 .build();

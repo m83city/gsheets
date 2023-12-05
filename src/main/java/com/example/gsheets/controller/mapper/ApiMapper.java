@@ -18,7 +18,6 @@ public class ApiMapper {
                     .build();
         }
     public static Student asStudent(StudentDTO student, ApiEnum method){
-        System.out.println(student);
             switch (method){
                 case CREATE -> {
                         return Student
