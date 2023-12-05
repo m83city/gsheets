@@ -56,10 +56,10 @@ public class GoogleClient {
                 .setRange("A" + (1 + getTargetIndex(id).getAsInt()))
                 .setValues(Arrays.asList(
                         Arrays.asList(
-                                student.getId(),
+                                id,
                                 student.getFirstName(),
                                 student.getSecondName(),
-                                student.getFirstName()
+                                student.getLastName()
                         )))
         );
         try {
@@ -97,7 +97,7 @@ public class GoogleClient {
                                 student.getId(),
                                 student.getFirstName(),
                                 student.getSecondName(),
-                                student.getFirstName()
+                                student.getLastName()
                         )))
         );
         try {

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.UUID;
+
 import static com.example.gsheets.controller.mapper.ApiMapper.*;
 
 @RestController
@@ -21,7 +23,7 @@ public class SheetController {
     }
     @PutMapping("/student/{id}")
     public void updateStudentById (@PathVariable String id, @RequestBody StudentDTO updatedStudent) throws GeneralSecurityException, IOException {
-        service.updateStudent(id, asStudent(updatedStudent));
+        service.updateStudent(id, asStudent(updatedStudent, ApiEnum.UPDATE));
     }
     @DeleteMapping("/student/{id}")
     public void deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
@@ -29,6 +31,6 @@ public class SheetController {
     }
     @PostMapping("/student")
     public void createNewStudent(@RequestBody StudentDTO student ) throws GeneralSecurityException, IOException {
-        service.createStudent(asStudent(student));
+        service.createStudent(asStudent(student, ApiEnum.CREATE));
     }
 }
