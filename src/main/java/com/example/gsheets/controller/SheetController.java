@@ -1,25 +1,36 @@
 package com.example.gsheets.controller;
 
+import com.example.gsheets.controller.dto.StudentDTO;
+import com.example.gsheets.service.SheetService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.UUID;
+
+import static com.example.gsheets.controller.mapper.ApiMapper.*;
+
 @RestController
-
+@RequiredArgsConstructor
 public class SheetController {
-    @GetMapping("/sheet/{id}")
-    public StudentDTO getStudentById(@RequestParam String id){
-        return ;
-    }
-    @PutMapping("/sheet/{id}")
-    public StudentDTO updateStudentById (@RequestParam String id, @RequestBody StudentDTO updatedStudent){
-        return null;
-    }
-    @DeleteMapping("/sheet/{id}")
-    public void deleteStudentById(@RequestParam String id){
+   private final SheetService service;
 
+    @GetMapping("/student/{id}")
+    public StudentDTO getStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
+        return asStudentDTO(service.getStudentById(id));
     }
-    @PostMapping("/sheet")
-    public StudentDTO createNewStudent(@RequestBody StudentDTO newStudent){
-        return null;
+    @PutMapping("/student/{id}")
+    public void updateStudentById (@PathVariable String id, @RequestBody StudentDTO updatedStudent) throws GeneralSecurityException, IOException {
+        service.updateStudent(id, asStudent(updatedStudent, ApiEnum.UPDATE));
     }
-
+    @DeleteMapping("/student/{id}")
+    public void deleteStudentById(@PathVariable String id) throws GeneralSecurityException, IOException {
+        service.deleteStudent(id);
+    }
+    @PostMapping("/student")
+    public void createNewStudent(@RequestBody StudentDTO student ){
+        service.createStudent(asStudent(student, ApiEnum.CREATE));
+    }
 }
